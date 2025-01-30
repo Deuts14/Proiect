@@ -5,9 +5,9 @@ using namespace std;
 
 class Cont {
 public:
-    float nc;
-    float ns;
-    float nt;
+    float nc; // minute convorbiri in alte retele
+    float ns; // mesaje SMS in orice retea
+    float nt; // trafic internet in MB
     float cost;
     Cont()
     {
@@ -43,13 +43,13 @@ public:
     }
     void propriu(float& cost)
     {
-        cost = cost + 0;
+        cost = cost + 0; // convorbiri in retea proprie nu adauga la costul suplimentar
     }
     void alte(float& cost, float nr)
     {
         cost = 0;
-        if (nr < 5)
-            cost = cost + nr * 0.5;
+        if (nr < 5) // convorbiri in late retele, dupa depasirea min NC din abonament
+            cost = cost + nr * 0.5; // mai putin de 5 minute, cost de 0.5 lei / minut
         else if (nr >= 5 && nr <= 30)
             cost = cost + nr * 0.3;
         else if (nr > 30)
@@ -57,8 +57,8 @@ public:
     }
     void text(float& cost, float sms)
     {
-        cost = 0;
-        if (sms < 20)
+        cost = 0; // mesaje SMS dupa depasirea NS din abonament
+        if (sms < 20) // mai putin de 20 de caractere, cost de 0.1 lei / minut
             cost = cost + sms * 0.1;
         else if (sms >= 20 && sms <= 50)
             cost = cost + sms * 0.05;
@@ -67,7 +67,7 @@ public:
     }
     void trafic(float& cost, float date)
     {
-        cost = 0;
+        cost = 0; // trafic internet, dupa depasirea celor NT de MB inclusi in abonament
         if (date < 1000)
             cost = cost + date * 0.3;
         else if (date >= 1000 && date <= 10000)
@@ -90,13 +90,13 @@ int main()
     float cost = 0;
     int j = 1;
     vector<pair<float, int>> v;
-    cin >> N >> X >> NC >> NS >> NT >> P >> Z;
-    string info;
+    cin >> N >> X >> NC >> NS >> NT >> P >> Z; // pe prima linie, separate prin spatiu toate variabilele cerute
+    string info; // pe urmatoarele N linii informatiile despre serviciile apelate
     for (int i = 0; i < N; i++)
     {
         getline(cin, info);
         getline(cin, info, ' ');
-        if (info == "A")
+        if (info == "A") // "A" in cerinta reprezinta convorbiri in retea proprie
         {
             cin >> zi >> durata;
             Actiuni a(NC, NS, NT);
@@ -106,7 +106,7 @@ int main()
             v.push_back(make_pair(cost, j));
             j++;
         }
-        else if (info == "B")
+        else if (info == "B") // "B" in cerinta reprezinta convorbiri in alte retele
         {
             cin >> zi >> durata;
             Actiuni a(NC, NS, NT);
@@ -116,7 +116,7 @@ int main()
             v.push_back(make_pair(cost, j));
             j++;
         }
-        else if (info == "C")
+        else if (info == "C") // "C" in cerinta reprezinta mesajele SMS
         {
             cin >> zi >> nr_car;
             Actiuni a(NC, NS, NT);
@@ -126,7 +126,7 @@ int main()
             v.push_back(make_pair(cost, j));
             j++;
         }
-        else if (info == "D")
+        else if (info == "D") // "D" in cerinta reprezinta trafic internet
         {
             cin >> zi >> nr_traf;
             Actiuni a(NC, NS, NT);
