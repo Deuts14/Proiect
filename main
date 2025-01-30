@@ -1,0 +1,152 @@
+#include <iostream>
+#include <vector>
+#include <string>
+using namespace std;
+
+class Cont {
+public:
+    float nc;
+    float ns;
+    float nt;
+    float cost;
+    Cont()
+    {
+        nc = ns = nt = 0;
+    }
+    Cont(float nc1, float ns1, float nt1)
+    {
+        nc = nc1;
+        ns = ns1;
+        nt = nt1;
+    }
+    virtual void propriu(float&)
+    {
+    }
+    virtual void alte(float&, float)
+    {
+    }
+    virtual void text(float&, float)
+    {
+    }
+    virtual void trafic(float&, float)
+    {
+    }
+    virtual void plata(float&)
+    {
+    }
+};
+
+class Actiuni : public Cont {
+public:
+    Actiuni(float nc = 0, float ns = 0, float nt = 0): Cont(nc, ns, nt)
+    {
+    }
+    void propriu(float& cost)
+    {
+        cost = cost + 0;
+    }
+    void alte(float& cost, float nr)
+    {
+        cost = 0;
+        if (nr < 5)
+            cost = cost + nr * 0.5;
+        else if (nr >= 5 && nr <= 30)
+            cost = cost + nr * 0.3;
+        else if (nr > 30)
+            cost = cost + nr * 0.2;
+    }
+    void text(float& cost, float sms)
+    {
+        cost = 0;
+        if (sms < 20)
+            cost = cost + sms * 0.1;
+        else if (sms >= 20 && sms <= 50)
+            cost = cost + sms * 0.05;
+        else
+            cost = cost + sms * 0.02;
+    }
+    void trafic(float& cost, float date)
+    {
+        cost = 0;
+        if (date < 1000)
+            cost = cost + date * 0.3;
+        else if (date >= 1000 && date <= 10000)
+            cost = cost + date * 0.2;
+        else
+            cost = cost + date * 0.1;
+    }
+    void plata(float& cost)
+    {
+    }
+};
+
+int main()
+{
+    float N, X, NC, NS, NT, P, Z;
+    int zi;
+    float nr_car;
+    float nr_traf;
+    float durata;
+    float cost = 0;
+    int j = 1;
+    vector<pair<float, int>> v;
+    cin >> N >> X >> NC >> NS >> NT >> P >> Z;
+    string info;
+    for (int i = 0; i < N; i++)
+    {
+        getline(cin, info);
+        getline(cin, info, ' ');
+        if (info == "A")
+        {
+            cin >> zi >> durata;
+            Actiuni a(NC, NS, NT);
+            Cont* c;
+            c = &a;
+            c->propriu(cost);
+            v.push_back(make_pair(cost, j));
+            j++;
+        }
+        else if (info == "B")
+        {
+            cin >> zi >> durata;
+            Actiuni a(NC, NS, NT);
+            Cont* c;
+            c = &a;
+            c->alte(cost, durata);
+            v.push_back(make_pair(cost, j));
+            j++;
+        }
+        else if (info == "C")
+        {
+            cin >> zi >> nr_car;
+            Actiuni a(NC, NS, NT);
+            Cont* c;
+            c = &a;
+            c->text(cost, nr_car);
+            v.push_back(make_pair(cost, j));
+            j++;
+        }
+        else if (info == "D")
+        {
+            cin >> zi >> nr_traf;
+            Actiuni a(NC, NS, NT);
+            Cont* c;
+            c = &a;
+            c->trafic(cost, nr_traf);
+            v.push_back(make_pair(cost, j));
+            j++;
+        }
+    }
+    int max = -1000;
+    int aux = 0;
+    for (int i = 0; i < v.size(); i++)
+    {
+        if (v[i].first > max)
+        {
+            max = v[i].first;
+            aux = v[i].second;
+        }
+    }
+    cout << aux;
+    return 0;
+}
